@@ -43,17 +43,17 @@ export class ApiService {
     );
   }
 
-  // Put call method
+  // Patch call method
   // Param 1 : url
   // Param 2 : model
-  put(url: string, model: any): Observable<any> {
+  patch(url: string, model: any): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       }),
       observe: 'response' as 'body',
     };
-    return this.httpClient.put(url, model, httpOptions).pipe(
+    return this.httpClient.patch(url, model, httpOptions).pipe(
       map((response: any) => this.ReturnResponseData(response)),
       catchError(this.handleError)
     );

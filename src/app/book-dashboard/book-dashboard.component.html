@@ -17,10 +17,15 @@
 <table class="table mt-3 container table-striped">
   <thead>
     <tr>
-      <th scope="col">Book Name</th>
+      <th scope="col">Title</th>
       <th scope="col">Author</th>
+      <th scope="col">ISBN</th>
       <th scope="col">Description</th>
+      <th scope="col">Publisher</th>
       <th scope="col">Category</th>
+      <th scope="col">Language</th>
+      <th scope="col">Date Created</th>
+      <th scope="col">Last Updated</th>
       <th scope="col">Action</th>
     </tr>
   </thead>
@@ -28,10 +33,15 @@
     <tr>
       <td>Book Name</td>
       <td>Author</td>
+      <td>1100</td>
       <td>Description</td>
+      <td>Publisher</td>
       <td>Category</td>
+      <td>Language</td>
+      <td>2021-01-01</td>
+      <td>2021-01-01</td>
       <td>
-        <button class="btn btn-outline-primary mx-3">Edit</button>
+        <button class="btn btn-outline-primary">Edit</button>
         <button class="btn btn-outline-danger mx-3">Delete</button>
       </td>
     </tr>
@@ -87,12 +97,39 @@
             />
           </div>
           <div class="mb-3">
+            <label for="isbn" class="form-label">ISBN</label>
+            <input
+              type="text"
+              formControlName="isnb"
+              class="form-control"
+              id="isbn"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="publisher" class="form-label">Publisher</label>
+            <input
+              type="text"
+              formControlName="publisher"
+              class="form-control"
+              id="publisher"
+            />
+          </div>
+          <div class="mb-3">
             <label for="category" class="form-label">Category</label>
             <input
               type="text"
               formControlName="category"
               class="form-control"
               id="category"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="language" class="form-label">Language</label>
+            <input
+              type="text"
+              formControlName="language"
+              class="form-control"
+              id="language"
             />
           </div>
         </form>

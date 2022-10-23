@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { HttpProviderService } from '../shared/http-provider.service';
 
 @Component({
   selector: 'app-book-dashboard',
@@ -8,8 +11,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class BookDashboardComponent implements OnInit {
   formValue!: FormGroup;
-
-  constructor(private formbuilder: FormBuilder) {}
+  isSubmitted: boolean = false;
+  constructor(
+    private formbuilder: FormBuilder,
+    private router: Router,
+    private httpProvider: HttpProviderService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.formValue = this.formbuilder.group({
@@ -18,5 +26,32 @@ export class BookDashboardComponent implements OnInit {
       description: ['', [Validators.required, Validators.minLength(3)]],
       category: ['', [Validators.required, Validators.minLength(3)]],
     });
+  }
+
+  AddNewBook(isValid: any) {
+    this.isSubmitted = true;
+    if (isValid) {
+      this.httpProvider.CreateBook(this.formValue).subscribe(
+        async (data) => {
+          if (data != null && data.body != null) {
+            if (data != null && data.body != null) {
+              var resultData = data.body;
+              if (resultData != null && resultData.isSuccess) {
+                this.toastr.success(resultData.message);
+                setTimeout(() => {
+                  this.router.navigate(['/Home']);
+                }, 500);
+              }
+            }
+          }
+        },
+        async (error) => {
+          this.toastr.error(error.message);
+          setTimeout(() => {
+            this.router.navigate(['/Home']);
+          }, 500);
+        }
+      );
+    }
   }
 }
