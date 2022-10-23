@@ -30,6 +30,7 @@
     </tr>
   </thead>
   <tbody>
+    <!-- <tr *ngFor="let book of bookList"> -->
     <tr>
       <td>Book Name</td>
       <td>Author</td>
@@ -42,7 +43,12 @@
       <td>2021-01-01</td>
       <td>
         <button class="btn btn-outline-primary">Edit</button>
-        <button class="btn btn-outline-danger mx-3">Delete</button>
+        <button
+          class="btn btn-outline-danger mx-3"
+          (click)="deleteBook('book')"
+        >
+          Delete
+        </button>
       </td>
     </tr>
   </tbody>
@@ -100,7 +106,7 @@
             <label for="isbn" class="form-label">ISBN</label>
             <input
               type="text"
-              formControlName="isnb"
+              formControlName="isbn"
               class="form-control"
               id="isbn"
             />
@@ -135,10 +141,21 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <button
+          type="button"
+          id="cancel"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
           Close
         </button>
-        <button type="button" class="btn btn-primary">Add New Book</button>
+        <button
+          type="button"
+          (click)="AddNewBook(this.formValue.valid)"
+          class="btn btn-primary"
+        >
+          Add New Book
+        </button>
       </div>
     </div>
   </div>
