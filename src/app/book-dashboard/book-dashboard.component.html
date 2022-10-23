@@ -58,22 +58,42 @@
         ></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form [formGroup]="formValue">
           <div class="mb-3">
             <label for="title" class="form-label">Title</label>
-            <input type="text" class="form-control" id="title" />
+            <input
+              type="text"
+              formControlName="title"
+              class="form-control"
+              id="title"
+            />
           </div>
           <div class="mb-3">
             <label for="author" class="form-label">Author</label>
-            <input type="text" class="form-control" id="author" />
+            <input
+              type="text"
+              formControlName="author"
+              class="form-control"
+              id="author"
+            />
           </div>
           <div class="mb-3">
             <label for="description" class="form-label">Description</label>
-            <input type="text" class="form-control" id="description" />
+            <input
+              type="text"
+              formControlName="description"
+              class="form-control"
+              id="description"
+            />
           </div>
           <div class="mb-3">
             <label for="category" class="form-label">Category</label>
-            <input type="text" class="form-control" id="category" />
+            <input
+              type="text"
+              formControlName="category"
+              class="form-control"
+              id="category"
+            />
           </div>
         </form>
       </div>
