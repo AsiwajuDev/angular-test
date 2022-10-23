@@ -8,7 +8,8 @@ var httpLink = {
   getAllBook: apiUrl + '/api/Book/getAllBook',
   deleteBookById: apiUrl + '/api/Book/deleteBookById',
   getBookDetailById: apiUrl + '/api/Book/getBookDetailById',
-  saveBook: apiUrl + '/api/Book/create',
+  createBook: apiUrl + '/api/Book/create',
+  updateBook: apiUrl + '/api/Book/update',
 };
 @Injectable({
   providedIn: 'root',
@@ -30,7 +31,10 @@ export class HttpProviderService {
       httpLink.getBookDetailById + '?BookId=' + model
     );
   }
-  public CreateBook(model: any): Observable<any> {
-    return this.webApiService.post(httpLink.saveBook, model);
+  public createBook(model: any): Observable<any> {
+    return this.webApiService.post(httpLink.createBook, model);
+  }
+  public updateBook(model: any): Observable<any> {
+    return this.webApiService.patch(httpLink.updateBook, model);
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { bookForm } from '../model/book.dashboard.model';
 import { HttpProviderService } from '../shared/http-provider.service';
 
 @Component({
@@ -11,6 +12,7 @@ import { HttpProviderService } from '../shared/http-provider.service';
 })
 export class BookDashboardComponent implements OnInit {
   formValue!: FormGroup;
+  editBookForm: bookForm = new bookForm();
   bookList: any = [];
 
   isSubmitted: boolean = false;
@@ -37,7 +39,7 @@ export class BookDashboardComponent implements OnInit {
     this.isSubmitted = true;
     if (isValid) {
       console.log('Form Values', this.formValue.value);
-      this.httpProvider.CreateBook(this.formValue).subscribe(
+      this.httpProvider.createBook(this.formValue).subscribe(
         async (data) => {
           if (data != null && data.body != null) {
             if (data != null && data.body != null) {
@@ -88,6 +90,61 @@ export class BookDashboardComponent implements OnInit {
     );
   }
 
+  getBookDetailById() {
+    this.httpProvider.getBookDetailById(this.editBookForm.id).subscribe(
+      (data: any) => {
+        if (data != null && data.body != null) {
+          var resultData = data.body;
+          if (resultData) {
+            this.editBookForm.title = resultData.title;
+            this.editBookForm.author = resultData.author;
+            this.editBookForm.description = resultData.description;
+            this.editBookForm.category = resultData.category;
+            this.editBookForm.language = resultData.language;
+            this.editBookForm.isbn = resultData.isbn;
+            this.editBookForm.publisher = resultData.publisher;
+          }
+        }
+      },
+      (error: any) => {
+        if (error) {
+          if (error.status == 404) {
+            if (error.error && error.error.message) {
+              this.bookList = [];
+            }
+          }
+        }
+      }
+    );
+  }
+
+  editBook(isValid: any) {
+    this.isSubmitted = true;
+    if (isValid) {
+      this.httpProvider.updateBook(this.editBookForm).subscribe(
+        async (data) => {
+          if (data != null && data.body != null) {
+            var resultData = data.body;
+            if (resultData != null && resultData.isSuccess) {
+              if (resultData != null && resultData.isSuccess) {
+                this.toastr.success(resultData.message);
+                setTimeout(() => {
+                  this.router.navigate(['/Home']);
+                }, 500);
+              }
+            }
+          }
+        },
+        async (error) => {
+          this.toastr.error(error.message);
+          setTimeout(() => {
+            this.router.navigate(['/Home']);
+          }, 500);
+        }
+      );
+    }
+  }
+
   deleteBook(book: any) {
     this.httpProvider.deleteBookById(book.id).subscribe(
       (data: any) => {
@@ -103,13 +160,3 @@ export class BookDashboardComponent implements OnInit {
     );
   }
 }
-
-// export class bookForm {
-//   title: string = '';
-//   author: string = '';
-//   description: string = '';
-//   category: string = '';
-//   language: string = '';
-//   isbn: string = '';
-//   publisher: string = '';
-// }
