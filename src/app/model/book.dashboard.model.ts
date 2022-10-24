@@ -1,4 +1,4 @@
-export class bookForm {
+export class BookForm {
   id: number = 0;
   title: string = '';
   author: string = '';

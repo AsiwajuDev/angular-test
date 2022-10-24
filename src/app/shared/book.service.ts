@@ -6,9 +6,8 @@ import { environment } from 'src/environments/environment';
 var httpLink = {
   getAllBook: environment.apiUrl + '/api/Books/all',
   deleteBookById: environment.apiUrl + '/api/Books/',
-  getBookDetailById: environment.apiUrl + '/api/Book/getBookDetailById',
   createBook: environment.apiUrl + '/api/Books/create',
-  updateBook: environment.apiUrl + '/api/Book/update',
+  updateBook: environment.apiUrl + '/api/Books/update',
 };
 @Injectable({
   providedIn: 'root',
@@ -22,11 +21,7 @@ export class BookService {
   public deleteBookById(model: any): Observable<any> {
     return this.webApiService.delete(httpLink.deleteBookById + model);
   }
-  public getBookDetailById(model: any): Observable<any> {
-    return this.webApiService.get(
-      httpLink.getBookDetailById + 'BookId=' + model
-    );
-  }
+
   public createBook(model: any): Observable<any> {
     return this.webApiService.post(httpLink.createBook, model);
   }

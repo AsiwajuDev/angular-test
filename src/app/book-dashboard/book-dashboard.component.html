@@ -160,6 +160,14 @@
             >
               Add New Book
             </button>
+            <button
+              type="button"
+              [disabled]="this.formValue.invalid"
+              (click)="updateBook()"
+              class="btn btn-primary"
+            >
+              Update Book
+            </button>
           </div>
         </form>
       </div>

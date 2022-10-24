@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { bookForm } from '../model/book.dashboard.model';
+import { BookForm } from '../model/book.dashboard.model';
 import { BookService } from '../shared/book.service';
 
 @Component({
@@ -12,8 +12,8 @@ import { BookService } from '../shared/book.service';
 })
 export class BookDashboardComponent implements OnInit {
   formValue!: FormGroup;
-  editBookForm: bookForm = new bookForm();
   bookList: any = [];
+  bookForm: BookForm = new BookForm();
 
   isSubmitted: boolean = false;
   constructor(
@@ -102,50 +102,33 @@ export class BookDashboardComponent implements OnInit {
       isbn: book.isbn,
       publisher: book.publisher,
     });
+    this.bookForm.id = book.id;
   }
 
-  getBookDetailById() {
-    this.bookService.getBookDetailById(this.editBookForm.id).subscribe(
-      (data: any) => {
-        if (data != null && data.body != null) {
-          const resultData = data.body;
-          if (resultData) {
-            this.editBookForm.title = resultData.title;
-            this.editBookForm.author = resultData.author;
-            this.editBookForm.description = resultData.description;
-            this.editBookForm.category = resultData.category;
-            this.editBookForm.language = resultData.language;
-            this.editBookForm.isbn = resultData.isbn;
-            this.editBookForm.publisher = resultData.publisher;
-          }
-        }
-      },
-      (error: any) => {
-        if (error) {
-          if (error.status == 404) {
-            if (error.error && error.error.message) {
-              this.bookList = [];
-            }
-          }
-        }
-      }
-    );
-  }
-
-  editBook(book: any) {
+  updateBook() {
     this.isSubmitted = true;
 
+    const form = {
+      ...this.formValue.value,
+      id: this.bookForm.id,
+    };
+
+    console.log('Form', form);
     if (this.formValue.valid) {
-      this.bookService.updateBook(book).subscribe(
+      this.bookService.updateBook(form).subscribe(
         (data) => {
           if (data != null && data.body != null) {
             const resultData = data.body;
-            if (resultData.isSuccess) {
-              this.toastr.success(resultData.message);
+            if (resultData.responseCode === 204) {
+              this.toastr.success(resultData.responseMessage);
               setTimeout(() => {
-                this.router.navigate(['/Home']);
+                this.router.navigate(['/']);
               }, 500);
             }
+            let ref = document.getElementById('cancel');
+            ref?.click();
+            this.formValue.reset();
+            this.getAllBooks();
           }
         },
         (error) => {
