@@ -33,14 +33,12 @@ export class ApiService {
   post(url: string, model: any): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
       }),
       observe: 'response' as 'body',
     };
-    return this.httpClient.post(url, model, httpOptions).pipe(
-      map((response: any) => this.ReturnResponseData(response)),
-      catchError(this.handleError)
-    );
+    return this.httpClient.post(url, model, httpOptions);
   }
 
   // Patch call method

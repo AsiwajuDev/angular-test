@@ -30,22 +30,28 @@
     </tr>
   </thead>
   <tbody>
-    <!-- <tr *ngFor="let book of bookList"> -->
-    <tr>
-      <td>Book Name</td>
-      <td>Author</td>
-      <td>1100</td>
-      <td>Description</td>
-      <td>Publisher</td>
-      <td>Category</td>
-      <td>Language</td>
-      <td>2021-01-01</td>
-      <td>2021-01-01</td>
+    <tr *ngFor="let book of bookList">
+      <td>{{ book?.title | titlecase }}</td>
+      <td>{{ book?.author | titlecase }}</td>
+      <td>{{ book?.isbn }}</td>
+      <td>{{ book?.description }}</td>
+      <td>{{ book?.publisher | titlecase }}</td>
+      <td>{{ book?.category | titlecase }}</td>
+      <td>{{ book?.language | titlecase }}</td>
+      <td>{{ book?.dateCreated | date }}</td>
+      <td>{{ book?.lastUpdated | date }}</td>
       <td>
-        <button class="btn btn-outline-primary">Edit</button>
+        <button
+          class="btn btn-outline-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+          (click)="openEditModal(book)"
+        >
+          Edit
+        </button>
         <button
           class="btn btn-outline-danger mx-3"
-          (click)="deleteBook('book')"
+          (click)="deleteBook(book?.id)"
         >
           Delete
         </button>
@@ -74,7 +80,7 @@
         ></button>
       </div>
       <div class="modal-body">
-        <form [formGroup]="formValue">
+        <form [formGroup]="formValue" (ngSubmit)="submit()">
           <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             <input
@@ -138,24 +144,24 @@
               id="language"
             />
           </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              id="cancel"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="submit"
+              [disabled]="this.formValue.invalid"
+              class="btn btn-primary"
+            >
+              Add New Book
+            </button>
+          </div>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          id="cancel"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Close
-        </button>
-        <button
-          type="button"
-          (click)="AddNewBook(this.formValue.valid)"
-          class="btn btn-primary"
-        >
-          Add New Book
-        </button>
       </div>
     </div>
   </div>

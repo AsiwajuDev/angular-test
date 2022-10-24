@@ -1,34 +1,30 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
-
-var apiUrl = 'http://localhost:8100/';
+import { environment } from 'src/environments/environment';
 
 var httpLink = {
-  getAllBook: apiUrl + '/api/Book/getAllBook',
-  deleteBookById: apiUrl + '/api/Book/deleteBookById',
-  getBookDetailById: apiUrl + '/api/Book/getBookDetailById',
-  createBook: apiUrl + '/api/Book/create',
-  updateBook: apiUrl + '/api/Book/update',
+  getAllBook: environment.apiUrl + '/api/Books/all',
+  deleteBookById: environment.apiUrl + '/api/Books/',
+  getBookDetailById: environment.apiUrl + '/api/Book/getBookDetailById',
+  createBook: environment.apiUrl + '/api/Books/create',
+  updateBook: environment.apiUrl + '/api/Book/update',
 };
 @Injectable({
   providedIn: 'root',
 })
-export class HttpProviderService {
+export class BookService {
   constructor(private webApiService: ApiService) {}
 
   public getAllBooks(): Observable<any> {
     return this.webApiService.get(httpLink.getAllBook);
   }
   public deleteBookById(model: any): Observable<any> {
-    return this.webApiService.post(
-      httpLink.deleteBookById + '?BookId=' + model,
-      ''
-    );
+    return this.webApiService.delete(httpLink.deleteBookById + model);
   }
   public getBookDetailById(model: any): Observable<any> {
     return this.webApiService.get(
-      httpLink.getBookDetailById + '?BookId=' + model
+      httpLink.getBookDetailById + 'BookId=' + model
     );
   }
   public createBook(model: any): Observable<any> {

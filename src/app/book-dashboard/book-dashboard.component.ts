@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { bookForm } from '../model/book.dashboard.model';
-import { HttpProviderService } from '../shared/http-provider.service';
+import { BookService } from '../shared/book.service';
 
 @Component({
   selector: 'app-book-dashboard',
@@ -19,7 +19,7 @@ export class BookDashboardComponent implements OnInit {
   constructor(
     private formbuilder: FormBuilder,
     private router: Router,
-    private httpProvider: HttpProviderService,
+    private bookService: BookService,
     private toastr: ToastrService
   ) {}
 
@@ -33,46 +33,48 @@ export class BookDashboardComponent implements OnInit {
       isbn: ['', [Validators.required, Validators.minLength(3)]],
       publisher: ['', [Validators.required, Validators.minLength(3)]],
     });
+    this.getAllBooks();
   }
 
-  AddNewBook(isValid: any) {
+  submit() {
     this.isSubmitted = true;
-    if (isValid) {
+    if (this.formValue.valid) {
       console.log('Form Values', this.formValue.value);
-      this.httpProvider.createBook(this.formValue).subscribe(
-        async (data) => {
-          if (data != null && data.body != null) {
-            if (data != null && data.body != null) {
-              var resultData = data.body;
-              if (resultData != null && resultData.isSuccess) {
-                this.toastr.success(resultData.message);
-                setTimeout(() => {
-                  this.router.navigate(['/']);
-                }, 500);
-              }
+      this.bookService.createBook(this.formValue.value).subscribe(
+        (data) => {
+          if (data != null && data?.body != null) {
+            console.log('Data', data);
+            const resultData = data?.body;
+            if (resultData.responseCode === 201) {
+              this.toastr.success(resultData.responseMessage);
+              setTimeout(() => {
+                this.router.navigate(['/']);
+              }, 500);
             }
+            let ref = document.getElementById('cancel');
+            ref?.click();
+            this.formValue.reset();
+            this.getAllBooks();
           }
         },
-        async (error) => {
+        (error) => {
           this.toastr.error(error.message);
           setTimeout(() => {
             this.router.navigate(['/']);
           }, 500);
         }
       );
-      let ref = document.getElementById('cancel');
-      ref?.click();
-      this.formValue.reset();
     } else {
       this.toastr.error('Please fill all the fields');
     }
   }
 
-  async getAllBooks() {
-    this.httpProvider.getAllBooks().subscribe(
+  getAllBooks() {
+    this.bookList = [];
+    this.bookService.getAllBooks().subscribe(
       (data: any) => {
         if (data != null && data.body != null) {
-          var resultData = data.body;
+          const resultData = data.body;
           if (resultData) {
             this.bookList = resultData;
           }
@@ -90,11 +92,23 @@ export class BookDashboardComponent implements OnInit {
     );
   }
 
+  openEditModal(book: any) {
+    this.formValue.patchValue({
+      title: book.title,
+      author: book.author,
+      description: book.description,
+      category: book.category,
+      language: book.language,
+      isbn: book.isbn,
+      publisher: book.publisher,
+    });
+  }
+
   getBookDetailById() {
-    this.httpProvider.getBookDetailById(this.editBookForm.id).subscribe(
+    this.bookService.getBookDetailById(this.editBookForm.id).subscribe(
       (data: any) => {
         if (data != null && data.body != null) {
-          var resultData = data.body;
+          const resultData = data.body;
           if (resultData) {
             this.editBookForm.title = resultData.title;
             this.editBookForm.author = resultData.author;
@@ -118,24 +132,23 @@ export class BookDashboardComponent implements OnInit {
     );
   }
 
-  editBook(isValid: any) {
+  editBook(book: any) {
     this.isSubmitted = true;
-    if (isValid) {
-      this.httpProvider.updateBook(this.editBookForm).subscribe(
-        async (data) => {
+
+    if (this.formValue.valid) {
+      this.bookService.updateBook(book).subscribe(
+        (data) => {
           if (data != null && data.body != null) {
-            var resultData = data.body;
-            if (resultData != null && resultData.isSuccess) {
-              if (resultData != null && resultData.isSuccess) {
-                this.toastr.success(resultData.message);
-                setTimeout(() => {
-                  this.router.navigate(['/Home']);
-                }, 500);
-              }
+            const resultData = data.body;
+            if (resultData.isSuccess) {
+              this.toastr.success(resultData.message);
+              setTimeout(() => {
+                this.router.navigate(['/Home']);
+              }, 500);
             }
           }
         },
-        async (error) => {
+        (error) => {
           this.toastr.error(error.message);
           setTimeout(() => {
             this.router.navigate(['/Home']);
@@ -145,14 +158,16 @@ export class BookDashboardComponent implements OnInit {
     }
   }
 
-  deleteBook(book: any) {
-    this.httpProvider.deleteBookById(book.id).subscribe(
+  deleteBook(id: any) {
+    console.log('Id', id);
+    this.bookService.deleteBookById(id).subscribe(
       (data: any) => {
         if (data != null && data.body != null) {
-          var resultData = data.body;
-          if (resultData != null && resultData.isSuccess) {
-            this.toastr.success(resultData.message);
+          const resultData = data.body;
+          console.log('Result Data', resultData);
+          if (resultData.responseCode === 204) {
             this.getAllBooks();
+            this.toastr.success(resultData.responseMessage);
           }
         }
       },
