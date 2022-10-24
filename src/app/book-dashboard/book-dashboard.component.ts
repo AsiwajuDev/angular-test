@@ -14,6 +14,7 @@ export class BookDashboardComponent implements OnInit {
   formValue!: FormGroup;
   bookList: any = [];
   bookForm: BookForm = new BookForm();
+  showAddBook: boolean = false;
 
   isSubmitted: boolean = false;
   constructor(
@@ -92,7 +93,14 @@ export class BookDashboardComponent implements OnInit {
     );
   }
 
+  clickAddBook() {
+    this.formValue.reset();
+    this.isSubmitted = false;
+    this.showAddBook = true;
+  }
+
   openEditModal(book: any) {
+    this.showAddBook = false;
     this.formValue.patchValue({
       title: book.title,
       author: book.author,

@@ -7,6 +7,7 @@
         type="button"
         data-bs-toggle="modal"
         data-bs-target="#exampleModal"
+        (click)="clickAddBook()"
       >
         Add Book
       </button>
@@ -157,6 +158,7 @@
               type="submit"
               [disabled]="this.formValue.invalid"
               class="btn btn-primary"
+              *ngIf="showAddBook"
             >
               Add New Book
             </button>
@@ -165,6 +167,7 @@
               [disabled]="this.formValue.invalid"
               (click)="updateBook()"
               class="btn btn-primary"
+              *ngIf="!showAddBook"
             >
               Update Book
             </button>
